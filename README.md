@@ -52,7 +52,7 @@
              set_up: 初始化操作主要是sql语句
              tear_down:
                - delete: delete from im_group where id = (select committeeGroupId from bt_course_class_info where id = 3694)
-                （什么操作类型要写，select，delete，update,inster）
+                （什么操作类型要写，select，delete，update,insert）
             (以上就是一个接口的两条用例)
            ````
  # 未实行功能
