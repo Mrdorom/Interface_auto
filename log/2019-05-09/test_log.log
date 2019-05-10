@@ -1,0 +1,2 @@
+2019-05-09 15:30:04,113 -connect_db- db_common.py[line:25] - INFO: 数据库连接错误：(2003, "Can't connect to MySQL server on '127.0.0.1' ([Errno 61] Connection refused)")
+2019-05-09 15:31:04,082 -connect_db- db_common.py[line:25] - INFO: 数据库连接错误：(2003, "Can't connect to MySQL server on '127.0.0.1' ([Errno 61] Connection refused)")

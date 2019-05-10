@@ -1,0 +1,11 @@
+# Created by .ignore support plugin (hsz.mobi)
+### Python template
+/log/
+/result/
+.gitignore
+.idea/
+__pycache__/
+result/
+testcase/__pycache__/
+unit/.DS_Store
+unit/__pycache__/
