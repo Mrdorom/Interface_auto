@@ -1,8 +1,6 @@
 # coding:utf-8
 
-from unit.base_path import CONFIG_PATH
 import xlrd
-import configparser
 import yaml
 
 
@@ -29,46 +27,6 @@ def get_excel(case_data_file,sheetname):
 				app[keys[j]] =  value
 			test_data.append(app)
 	return test_data
-
-"""---------------------------------ReadConfig-----------------------------------------"""
-
-
-class ReadConfig(object):
-
-	def __init__(self):
-		self.cf = configparser.ConfigParser()
-		self.cf.read(CONFIG_PATH)    # CONFIG_PATH 配置文件地址
-
-	def get_http_data(self,option):
-		"""
-		读取Http数据
-		:param option:
-		:return:
-		"""
-		data = self.cf.get("Http",option)
-		return data
-
-
-	def get_database_data (self, option):
-		"""
-		读取数据库配置数据
-		:param option:
-		:return:
-		"""
-
-		data = self.cf.get ("Database", option)
-		# data = self.cf.get ("Database", "/Users/workspace/btclass/code/config/config.ini")
-		return data
-
-	def get_email_data(self,option):
-		"""
-		读取Email数据
-		:param option:
-		:return:
-		"""
-		data = self.cf.get("Email",option)
-		return data
-
 
 """----------------------------------ReadYaml---------------------------------------------------"""
 

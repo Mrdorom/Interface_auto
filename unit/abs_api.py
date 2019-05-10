@@ -2,7 +2,7 @@
 from unit.base_api import SendRequest
 from unit.base_path import Result_Dir
 from unit.common import get_yaml_data
-from unit.db_common import DbOption
+from unit.dbConnect import DbOption
 from unit.report import SetStyle
 from queue import Queue
 import re
