@@ -9,5 +9,5 @@ result/
 testcase/__pycache__/
 unit/.DS_Store
 unit/__pycache__/
-/testcase
-
+/testcase/
+/debug/
