@@ -38,12 +38,13 @@
           ````
            - params1: 第一参数
              params2: 第二参数
-             check: 检查点（目前只支持code 校验，要看你们的返回结果具体修改）
+             check: 检查点
                 - code: 200
+                - res: True(支持多检查点)
              set_up: 初始化操作主要是sql语句
              tear_down:
-               - delete: delete from im_group where id = (select committeeGroupId from bt_course_class_info where id = 3694)
-                （什么操作类型要写，select，delete，update,inster）
+               - delete: delete from im_group where id = 1
+                （什么操作类型要写，select，delete，update,insert）
            
            - params1: 第一参数
              params2: 第二参数
@@ -56,8 +57,7 @@
             (以上就是一个接口的两条用例)
            ````
  # 未实行功能
- * 登录校验
- * 签名校验
+ * ~~登录校验~~
  * 如果有需要可以实行，需要新增方法
  
 # 依赖库
@@ -66,8 +66,6 @@ pip install requests
 pip install PyMySQL
 pip install XlsWriter 
 pip install pyyaml
-pip install xlrd
-
 ```
 
 
