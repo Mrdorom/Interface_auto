@@ -4,6 +4,8 @@ from unit.base_path import Result_Dir
 from unit.common import get_yaml_data
 from unit.dbConnect import DbOption
 from unit.report import SetStyle
+from unit.signature import GetSignature
+from unit.error_exception import CheckParamsError
 from queue import Queue
 import re
 import xlsxwriter
@@ -28,9 +30,13 @@ class CreateCase(object):
         self.tear_down = None
         self.send_result = None
         self.result = None
+        self.result_name = None
+
 
         self.db = DbOption()
-        self.result_name = None
+        self.sign = GetSignature()
+        self.check_list = []   # 用于存放找到的检查点数据
+
 
     def __get_file_data(self,file):
         self.result_name = os.path.splitext(os.path.split(file)[1])[0]
@@ -56,6 +62,10 @@ class CreateCase(object):
                 path = label_data["url_path"]
                 self.method = label_data["method"]
                 self.header = label_data["headers"]
+                self.case_name = self.case_params["test_type"]
+                if self.case_name !="Login":
+                    token = self.sign.token()
+                    self.header["token"] = token
                 case_list = label_data["case"]
                 pattern = re.compile(r"{(.*?)}")
                 patten_result = pattern.findall(path)
@@ -75,14 +85,13 @@ class CreateCase(object):
                             self.full_url = self.base_url + path
                             # params 特殊处理
                             self.case_params = case_data
-                    self.case_name = self.case_params["test_type"]
                     self.set_up = self.case_params["set_up"]
                     self.tear_down = self.case_params["tear_down"]
                     self.check = self.case_params["check"]
-                    # print(self.check)
+                    del self.case_params["check"]
+                    del self.case_params["test_type"]
                     del self.case_params["set_up"]
                     del self.case_params["tear_down"]
-
                     _request = {}
                     _request["TestName"] = self.case_name
                     _request["url"] = self.full_url
@@ -91,13 +100,21 @@ class CreateCase(object):
                     _request["set_up"] = self.set_up
                     _request["tear_down"] = self.tear_down
                     _request["case_params"] = self.case_params
+                    _request["check"] = self.check
                     self.__send_request()
                     _request["send_result"] = self.send_result
                     _request["result"] = self.result
                     _request_list.append(_request)
+
+                    print("————————————————————*————————————————————"*3 + "\n" +
+                          "用例名称：{0}".format(self.case_name) + "\n" +
+                          "请求参数是：{0}".format(str(self.case_params)) + "\n" +
+                          "响应信息：{0}".format(self.send_result) + '\n'
+                          "check是：{0}".format(str(self.result)) +
+                          "\n" + "————————————————————*————————————————————"*3 + "\n")
                     # print(self.result)
             self.write_report(_request_list)
-            print(_request_list)
+            # print(_request_list)
 
     def __send_request(self):
         """执行接口"""
@@ -140,29 +157,18 @@ class CreateCase(object):
                 else:
                     self.db.operation(sql_datum[datum])
 
-    def check_point(self,res):
+    def check_report(self,res):
+        """检查点"""
         res= json.loads(res)
-        res_code = res["code"]
-        # print(res_code)
         for datum in self.check:
-            if isinstance(datum,str):
-                if datum in res:
+            if isinstance(datum,dict):
+                self.check_dict(res,datum)
+                if datum in self.check_list:
                     return True
                 else:
                     return False
-            elif isinstance(datum,list):
-                pass
-
-            elif isinstance(datum,dict):
-                check_code = datum[list(datum.keys())[0]]
-                # print(check_code)
-                try:
-                    assert str(check_code) == str(res_code)
-                    return True
-                except AssertionError:
-                    return False
             else:
-                print("不存在的检查点类型")
+                raise CheckParamsError("不支持的检查点参数")
 
     def write_report(self,data):
         tr = time.strftime("%Y-%m-%d",time.localtime(time.time()))
@@ -179,6 +185,26 @@ class CreateCase(object):
         self.__get_file_data(file)
         self.__get_case_queue()
         self.__component_case()
+
+
+    def check_dict(self,res,check_params):
+        """
+        检查点数据处理
+        :param res: 接口返回的结果
+        :param check_params: 检查点的数据
+        :return:
+        """
+        for key in check_params.keys():
+            for obj in res.items():
+                res_key,res_values = obj
+                if key == res_key:
+                    check_result_dict = {}
+                    check_result_dict[key] = res[key]
+                    self.check_list.append(check_result_dict)
+                else:
+                    if isinstance(res_values,dict):
+                        self.check_dict(res_values,check_params)
+        return self.check_list
 
 if __name__ == "__main__":
     pass

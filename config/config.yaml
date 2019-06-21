@@ -1,0 +1,10 @@
+# 获取token 配置文件
+
+
+token:
+  url: " "
+  headers: " "
+  login_ata:
+    userName: 137******1731
+    passWd: 12345
+    #其他登录参数请在passwd 后自行添加

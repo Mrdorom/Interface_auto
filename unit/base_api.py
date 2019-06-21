@@ -39,9 +39,6 @@ class SendRequest(object):
 	def send_request(self):
 		if self.method =="get" or self.method == "GET":
 			try:
-				# self.mylogger.info(str(self.url))
-				# self.mylogger.info(str(self.params))
-
 				res = requests.get(url=self.url,params=self.params,headers=self.header,verify=False)
 
 				return res.text
