@@ -42,7 +42,7 @@ class SetStyle(object):
             _write_center(worksheet, "F" + str(temp), str(item["tear_down"]), self.wd)
             _write_center(worksheet, "G" + str(temp), str(item["case_params"]), self.wd)
             _write_center(worksheet, "H" + str(temp), str(item["send_result"]), self.wd)
-            _write_center(worksheet, "I" + str(temp), str(item["send_result"]), self.wd)
+            _write_center(worksheet, "I" + str(temp), str(item["check"]), self.wd)
             _write_center(worksheet, "J" + str(temp), item["result"], self.wd)
             temp += 1
             # if item["test_image"] == None:
