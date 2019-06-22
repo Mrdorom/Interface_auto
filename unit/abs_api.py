@@ -138,7 +138,7 @@ class CreateCase(object):
                 self.send_result = res
                 # print(res)
                 # res = json.dumps(res)
-                self.result = self.check_point(res)
+                self.result = self.check_report(res)
             except Exception as e:
                 print("出错了")
                 self.result = "Error"
@@ -170,23 +170,6 @@ class CreateCase(object):
             else:
                 raise CheckParamsError("不支持的检查点参数")
 
-    def write_report(self,data):
-        tr = time.strftime("%Y-%m-%d",time.localtime(time.time()))
-        report_dir = os.path.join(Result_Dir,tr)
-        if not os.path.exists(report_dir):
-            os.mkdir(report_dir)
-        workbook = xlsxwriter.Workbook(os.path.join(report_dir,self.result_name+".xlsx"))
-        worksheet = workbook.add_worksheet("测试详情")
-        bc = SetStyle(wd=workbook, data=data)
-        bc.test_detail(worksheet)
-        bc.close()
-
-    def main(self,file):
-        self.__get_file_data(file)
-        self.__get_case_queue()
-        self.__component_case()
-
-
     def check_dict(self,res,check_params):
         """
         检查点数据处理
@@ -205,6 +188,25 @@ class CreateCase(object):
                     if isinstance(res_values,dict):
                         self.check_dict(res_values,check_params)
         return self.check_list
+
+    def write_report(self,data):
+        tr = time.strftime("%Y-%m-%d",time.localtime(time.time()))
+        report_dir = os.path.join(Result_Dir,tr)
+        if not os.path.exists(report_dir):
+            os.mkdir(report_dir)
+        workbook = xlsxwriter.Workbook(os.path.join(report_dir,self.result_name+".xlsx"))
+        worksheet = workbook.add_worksheet("测试详情")
+        bc = SetStyle(wd=workbook, data=data)
+        bc.test_detail(worksheet)
+        bc.close()
+
+    def main(self,file):
+        self.__get_file_data(file)
+        self.__get_case_queue()
+        self.__component_case()
+
+
+
 
 if __name__ == "__main__":
     pass
