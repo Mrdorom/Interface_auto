@@ -62,13 +62,13 @@ class CreateCase(object):
                 path = label_data["url_path"]
                 self.method = label_data["method"]
                 self.header = label_data["headers"]
-                self.case_name = self.case_params["test_type"]
-                if self.case_name !="Login":
-                    token = self.sign.token()
-                    self.header["token"] = token
                 case_list = label_data["case"]
                 pattern = re.compile(r"{(.*?)}")
                 patten_result = pattern.findall(path)
+                """self.case_name = self.case_params["test_type"]
+                if self.case_name !="登录":
+                    token = self.sign.token()
+                    self.header["token"] = token"""
                 for case_data in case_list:
                     if len(patten_result) ==0:
                         # print("url 不需要拼接")
@@ -85,22 +85,27 @@ class CreateCase(object):
                             self.full_url = self.base_url + path
                             # params 特殊处理
                             self.case_params = case_data
-                    self.set_up = self.case_params["set_up"]
-                    self.tear_down = self.case_params["tear_down"]
+                    self.case_name = self.case_params["test_type"]
+                    if  "登录" not in self.case_name:
+                        token = self.sign.get_token()
+                        self.header["token"] = token
+                    self.set_up = self.case_params["setup"]
+                    self.tear_down = self.case_params["teardown"]
                     self.check = self.case_params["check"]
                     del self.case_params["check"]
                     del self.case_params["test_type"]
-                    del self.case_params["set_up"]
-                    del self.case_params["tear_down"]
+                    del self.case_params["setup"]
+                    del self.case_params["teardown"]
                     _request = {}
                     _request["TestName"] = self.case_name
                     _request["url"] = self.full_url
                     _request["method"] = self.method
                     _request["headers"] = self.header
-                    _request["set_up"] = self.set_up
-                    _request["tear_down"] = self.tear_down
+                    _request["setup"] = self.set_up
+                    _request["teardown"] = self.tear_down
                     _request["case_params"] = self.case_params
                     _request["check"] = self.check
+                    self.check_list= []
                     self.__send_request()
                     _request["send_result"] = self.send_result
                     _request["result"] = self.result
@@ -109,9 +114,10 @@ class CreateCase(object):
                     print("————————————————————*————————————————————"*3 + "\n" +
                           "用例名称：{0}".format(self.case_name) + "\n" +
                           "请求参数是：{0}".format(str(self.case_params)) + "\n" +
-                          "响应信息：{0}".format(self.send_result) + '\n'
-                          "check是：{0}".format(str(self.result)) +
-                          "\n" + "————————————————————*————————————————————"*3 + "\n")
+                          "响应信息：{0}".format(self.send_result) + '\n'+
+                          "检查点是：{0}".format(self.check)+"\n"
+                          "check是：{0}".format(str(self.result)) +"\n" 
+                          +"————————————————————*————————————————————"*3 )
                     # print(self.result)
             self.write_report(_request_list)
             # print(_request_list)
@@ -160,15 +166,20 @@ class CreateCase(object):
     def check_report(self,res):
         """检查点"""
         res= json.loads(res)
+        result_list = []
         for datum in self.check:
             if isinstance(datum,dict):
                 self.check_dict(res,datum)
                 if datum in self.check_list:
-                    return True
+                    result_list.append(True)
                 else:
-                    return False
+                    result_list.append(False)
             else:
                 raise CheckParamsError("不支持的检查点参数")
+        if False in result_list:
+            return False
+        else:
+            return True
 
     def check_dict(self,res,check_params):
         """
