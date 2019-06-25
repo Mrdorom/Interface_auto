@@ -56,6 +56,16 @@
                 （什么操作类型要写，select，delete，update,insert）
             (以上就是一个接口的两条用例)
            ````
+  ---
+   * 指定yaml文件测试用例不执行
+    * 配置文件 non_execution.yaml
+     non_execution.yaml 书写格式，一定要以列表的形式
+     ```
+     - 登录.yaml
+     — 注册.yaml
+     ```
+
+
  # 未实行功能
  * ~~登录校验~~
  * ~~多检查点~~
