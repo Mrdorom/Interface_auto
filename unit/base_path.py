@@ -11,6 +11,7 @@ Config = BASE_PATH("config/config.yaml")
 Test_Case_Dir = BASE_PATH("testcase")    # 用例存放文件
 LOGDIR = BASE_PATH("log")                # 日志目录
 Result_Dir = BASE_PATH("result")         #  结果目录
+Non_Execution = BASE_PATH("config/non_execution.yaml")
 
 
 if __name__ == "__main__":

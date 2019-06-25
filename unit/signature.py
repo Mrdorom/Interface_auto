@@ -10,7 +10,7 @@ class GetSignature(object):
 	def __init__(self):
 		self.token = None
 		signature_data = get_yaml_data(Config)["token"]
-		self.heasers = signature_data["headers"]
+		self.headers = signature_data["headers"]
 		self.login_data = signature_data["login_ata"]
 		self.url = signature_data["url"]
 
@@ -18,8 +18,8 @@ class GetSignature(object):
 	def get_token(self):
 		self.login_data = json.dumps(self.login_data)
 		try:
-			re = requests.post(url=self.url,heaser=self.heasers,data=self.login_data)
-			token = json.loads(re.text)["token"]
+			re = requests.post(url=self.url,headers=self.headers,data=self.login_data)
+			token = json.loads(re.text)["data"]["token"]
 			return token
 		except:
-			raise GetTokenError("Tooken 获取错误")
+			raise GetTokenError("Token 获取错误")
