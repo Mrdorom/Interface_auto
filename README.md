@@ -58,7 +58,7 @@
            ````
   ---
    * 指定yaml文件测试用例不执行
-    * 配置文件 non_execution.yaml
+     * 配置文件 non_execution.yaml
      non_execution.yaml 书写格式，一定要以列表的形式
      ```
      - 登录.yaml
